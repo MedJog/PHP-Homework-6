@@ -1,0 +1,11 @@
+# IDE files
+.vscode/
+
+# Composer packages
+/vendor/
+/node_modules/
+/db/
+
+# Environment files
+.env
+
