@@ -3,11 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>{{ title }}</title>
-    <link rel="stylesheet" href="../styles/style.css">
+    <link rel="stylesheet" href="/styles/style.css">
 </head>
 <body>
     {% include 'header.tpl' %}
-    
+    <div class="login" id="login">
+            {% include "auth-template.tpl" %}
+    </div>
     <div class="main-content center">
         {% include content_template_name %}
         {% include 'sidebar.tpl' %}

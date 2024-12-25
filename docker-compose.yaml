@@ -63,6 +63,10 @@ services:
     networks:
       - app-network
 
+  memcache:
+    image: memcached:latest
+    ports:
+      - "11211:11211"
 
 #Docker Networks
 networks:

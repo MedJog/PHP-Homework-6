@@ -32,11 +32,23 @@ class Render {
             // Если используем основной layout
             $template = $this->environment->load('main.tpl');
             $templateVariables['content_template_name'] = $contentTemplateName;
+
+            if(isset($_SESSION['user_name'])){
+                $templateVariables['user_authorized'] = true;
+            }
+            
         } else {
             // Загружаем чистый шаблон напрямую
             $template = $this->environment->load($contentTemplateName);
         }
     
         return $template->render($templateVariables);
+    }
+    public function renderPageWithForm(string $contentTemplateName = 'page-index.tpl', array $templateVariables = []) {
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        
+        $templateVariables['csrf_token'] = $_SESSION['csrf_token'];
+ 
+        return $this->renderPage($contentTemplateName, $templateVariables);
     }
 }

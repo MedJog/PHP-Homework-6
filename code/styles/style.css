@@ -34,6 +34,10 @@
   font-size: 24px;
   color: blue;
 }
+/* login */
+.login {
+  background-color: aliceblue;
+}
 .main-content {
   display: flex;
   justify-content: space-around;
@@ -43,8 +47,11 @@
   /* border: 2px solid darkblue; */
 }
 .text {
-  font-size: 24px;
-  color: blue;
+  font-size: 30px;
+  font-weight: 800;
+  font-style: italic;
+  color: darkblue;
+  margin-bottom: 20px;
 }
 .users {
   width: 55%;
@@ -58,9 +65,35 @@
 
 } */
 .users-li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
   color: darkblue;
   font-style: italic;
+  font-size: 18px;
   margin-bottom: 10px;
+    
+}
+.buttons {
+  display: flex;
+  gap: 5px;
+}
+.btn {
+  border: 1px solid blue;
+  border-radius: 5px;
+  background-color: white;
+  padding: 3px;
+  font-size: 14px;
+  font-style: italic;
+  color: blue;
+}
+.update-btn {
+  display: block;
+}
+.btn:hover {
+  background-color: blue;
+  color: white;
 }
 /* .sidebar {
  
@@ -87,4 +120,22 @@
 .footer-content {
   padding: 40px;
   color: white;
+}
+/* стили для сообщений */
+.block-message {
+  display: flex;
+  flex-direction: column;
+
+}
+.text-message {
+  font-size: 24px;
+  color: blue;
+  margin-bottom: 20px;
+}
+.link-message {
+  color: darkblue;
+  font-weight: 600;
+  font-style: italic;
+  text-decoration: underline;
+  margin-bottom: 5px;
 }

@@ -4,6 +4,7 @@ namespace Geekbrains\Application1\Domain\Models;
 
 use Geekbrains\Application1\Application\Application;
 use Geekbrains\Application1\Infrastructure\Storage;
+use \PDO;
 
 class User {
     private ?int $idUser;
@@ -49,10 +50,6 @@ class User {
         return $this->userBirthday;
     }
     
-
-    // public function setBirthdayFromString(string $birthdayString) : void {
-    //     $this->userBirthday = strtotime($birthdayString);
-    // }
     public function setBirthdayFromString(?string $birthdayString) : void {
         if ($birthdayString) {
             $this->userBirthday = strtotime($birthdayString);
@@ -71,7 +68,7 @@ class User {
         $users = [];
 
         foreach($result as $item){
-            $user = new User($item['user_name'], $item['user_lastname'], $item['user_birthday_timestamp']);
+            $user = new User($item['user_name'], $item['user_lastname'], $item['user_birthday_timestamp'], $item['id_user']);
             $users[] = $user;
         }
     
@@ -80,22 +77,38 @@ class User {
 
 // проверка данных
     public static function validateRequestData(): bool{
-        if(
-            isset($_GET['name']) && !empty($_GET['name']) &&
-            isset($_GET['lastname']) && !empty($_GET['lastname']) &&
-            isset($_GET['birthday']) && !empty($_GET['birthday'])
-        ){
-            return true;
+        $result = true;
+        
+        if(!(
+            isset($_POST['name']) && !empty($_POST['name']) &&
+            isset($_POST['lastname']) && !empty($_POST['lastname']) &&
+            isset($_POST['birthday']) && !empty($_POST['birthday'])
+        )){
+            $result = false;
         }
-        else{
-            return false;
+        // Проверка на дату в формате DD-MM-YYYY
+        if(!preg_match('/^(\d{2}-\d{2}-\d{4})$/', $_POST['birthday'])){
+            $result =  false;
         }
+         // Проверка на отсутствие HTML-тегов в имени и фамилии
+        if (
+            preg_match('/<[^>]*>/', $_POST['name']) || 
+            preg_match('/<[^>]*>/', $_POST['lastname'])
+        ) {
+            $result = false;
+        }
+        // if(!isset($_SESSION['csrf_token']) || $_SESSION['csrf_token'] != $_POST['csrf_token']){
+        //     $result = false;
+        // }
+
+        return $result;
+        
     }
 
     public function setParamsFromRequestData(): void {
-        $this->userName = $_GET['name'];
-        $this->userLastName = $_GET['lastname'];
-        $this->setBirthdayFromString($_GET['birthday']); 
+        $this->userName = htmlspecialchars($_POST['name']);
+        $this->userLastName = htmlspecialchars($_POST['lastname']);
+        $this->setBirthdayFromString($_POST['birthday']); 
     }
     // Метод для сохранения пользователя
     public function saveToStorage(){
@@ -127,8 +140,7 @@ class User {
         }
     }
     // обновление данных пользователя
-    
-    public function updateUser(int $user_id, array $userDataArray): void {
+    public static function updateUser(int $user_id, array $userDataArray): void {
         $sql = "UPDATE users SET ";
     
         $counter = 0;
@@ -158,6 +170,19 @@ class User {
 
         $handler = Application::$storage->get()->prepare($sql);
         $handler->execute(['id_user' => $user_id]);
+    }
+    // получение пользователя по id
+    public static function getById(int $id): ?User {
+        $sql = "SELECT id_user, user_name, user_lastname, user_birthday_timestamp FROM users WHERE id_user = :id_user";
+        $handler = Application::$storage->get()->prepare($sql);
+        $handler->execute(['id_user' => $id]);
+        $result = $handler->fetch(PDO::FETCH_ASSOC);
+
+        if ($result) {
+            return new User($result['user_name'], $result['user_lastname'], $result['user_birthday_timestamp'], $result['id_user']);
+        }
+        
+        return null;
     }
 
     

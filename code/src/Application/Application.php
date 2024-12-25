@@ -2,9 +2,9 @@
 
 namespace Geekbrains\Application1\Application;
 
-use Exception;
 use Geekbrains\Application1\Infrastructure\Config;
 use Geekbrains\Application1\Infrastructure\Storage;
+use Geekbrains\Application1\Application\Auth;
 
 class Application {
 
@@ -16,14 +16,18 @@ class Application {
     public static Config $config;
     public static Storage $storage;
 
+    public static Auth $auth;
+
     
     public function __construct(){
         Application::$config = new Config();
         Application::$storage = new Storage();
+        Application::$auth = new Auth();
     }
 
 
     public function run() : string {
+        // session_start();
 // разбиваем строку по символам
         $routeArray = explode('/', $_SERVER['REQUEST_URI']);
 // если 1 элемент сущестует и не пуст
